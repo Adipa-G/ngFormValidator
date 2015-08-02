@@ -10,7 +10,7 @@ It's not tested with older versions of angular, and you are welcome to test it w
 
 DEMO
 -----
-http://adipa-g.github.io/angular-form-validator/
+http://adipa-g.github.io/angular-forms-validator.html
 
 License
 -----
