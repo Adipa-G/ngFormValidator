@@ -1,0 +1,6 @@
+.idea
+node_modules
+bin
+obj
+coverage
+npm-debug.log

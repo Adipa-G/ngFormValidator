@@ -1,0 +1,16 @@
+﻿<form name="introform" ng-controller="intro">
+    <!--you can use
+        <div class="form-group" validator="string[2]">
+        or <div class="form-group" validator="string[2,,should be more than 2 characters]">
+        if you want only to validate minimum length-->
+    <!--also you can use
+        <div class="form-group" validator="string[,3]">
+        or <div class="form-group" validator="string[,3,should be less than 3 characters]">
+        if you want only to validate max length-->
+    <div class="form-group" validator="string[2,3]">
+        <label for="field2To3">2 to 3 Length Field</label>
+        <input type="text" class="form-control" id="field2To3" name="field2To3"
+               placeholder="With Default Message" ng-model="field2To3">
+    </div>
+    <button type="submit" class="btn btn-default" ng-disabled="!introform.$valid">Submit</button>
+</form>

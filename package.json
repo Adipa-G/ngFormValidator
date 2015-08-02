@@ -1,0 +1,59 @@
+{
+  "name": "angular-form-validator",
+  "version": "1.4.1",
+  "description": "Forms validation for angularJS",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adipa-g/angular-form-validator.git"
+  },
+  "homepage": "http://adipa-g.github.io/angular-form-validator/",
+  "scripts": {
+    "test": "grunt karma",
+    "build": "grunt build",
+    "development": "grunt dev"
+  },
+  "author": "Adipa Gunaseara (https://github.com/adipa-g)",
+  "license": "MIT",
+  "keywords": [
+    "angular",
+    "angularjs",
+    "validation",
+    "form",
+    "angular validation",
+    "form validation",
+    "validator",
+    "client-side"
+  ],
+  "bugs": {
+    "url": "http://adipa-g.github.io/angular-form-validator/issues"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.4",
+    "grunt-browser-sync": "~2.1.3",
+    "grunt-contrib-clean": "~0.6.0",
+    "grunt-contrib-concat": "~0.5.0",
+    "grunt-contrib-copy": "~0.8.0",
+    "grunt-contrib-jshint": "^0.11.2",
+    "grunt-contrib-uglify": "~0.9.1",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-jsbeautifier": "^0.2.7",
+    "grunt-karma": "~0.11.0",
+    "karma": "^0.12.37",
+    "karma-chrome-launcher": "~0.1.2",
+    "karma-coffee-preprocessor": "~0.2.1",
+    "karma-coverage": "^0.4.2",
+    "karma-firefox-launcher": "~0.1.2",
+    "karma-html2js-preprocessor": "~0.1.0",
+    "karma-jasmine": "~0.3.5",
+    "karma-phantomjs-launcher": "~0.2.0",
+    "karma-requirejs": "~0.2.0",
+    "karma-script-launcher": "~0.1.0",
+    "load-grunt-tasks": "~3.2.0",
+    "requirejs": "~2.1.14",
+    "time-grunt": "~1.2.1"
+  },
+  "main": "Gruntfile.js",
+  "directories": {
+    "test": "test"
+  }
+}
