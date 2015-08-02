@@ -40,7 +40,7 @@ Writing your First Code
 </form>
 ```
 
-[Documentation API](http://adipa-g.github.io/angular-form-validator/blob/master/API.md)
+[Documentation API](https://github.com/Adipa-G/Angular-Form-Validator/wiki/API)
 
 Built-in validation <small>in angular-form-validator</small>
 ===
@@ -105,4 +105,4 @@ $scope.validator.introform = {
 
 CHANGELOG
 =====
-See [release](http://adipa-g.github.io/angular-form-validator/CHANGELOG.md)
+See [release](https://github.com/Adipa-G/Angular-Form-Validator/wiki/CHANGELOG)
