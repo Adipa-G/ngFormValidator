@@ -87,14 +87,81 @@
             };
         };
 
-        function validateRequired(value, msg) {
-            if (!value) {
-                if (msg) {
-                    msg = msg.replace('[', '').replace(']', '');
-                } else {
-                    msg = 'This field is required';
+        function getValidationRules(ruleStr) {
+            var rules = [];
+            
+            var regexp = /([^\[\],]*)(\[([^\[\]]*\])|\[([\'\"](.)*[\'\"])*\])?([,]?)/g;
+            var match = regexp.exec(ruleStr);
+
+            while (match != null && match[0]) {
+                var rule = {
+                    type: match[1].toLowerCase(),
+                    params: []
+                };
+                
+                if (match[2]) {
+                    var paramArr = match[2].replace('[', '').replace(']', '').split(',');
+                    for (var i = 0; i < paramArr.length; i++) {
+                        var param = paramArr[i].trim();
+                        if (param) {
+                            rule.params.push({ name: param, value: null });
+                        }
+                    }
                 }
-                return { valid: false, message: msg };
+                rules.push(rule);
+                match = regexp.exec(ruleStr);
+            }
+            return rules;
+        };
+
+        function addWatches(scope, modelController, ruleStr) {
+            var rules = getValidationRules(ruleStr);
+            for (var i = 0; i < rules.length; i++) {
+                var rule = rules[i];
+                for (var j = 0; j < rule.params.length; j++) {
+                    var param = rule.params[j];
+                    if (param.name.charAt(0) !== '\'' && param.name.charAt(0) !== '\"') {
+                        scope.$watch(param.name, function (oldValue, newValue) {
+                            if (oldValue !== newValue) {
+                                modelController.$validate();
+                            }
+                        });
+                    }
+                }
+            }
+        };
+
+        function extractParams(scope,ruleStr) {
+            var rules = getValidationRules(ruleStr);
+            for (var i = 0; i < rules.length; i++) {
+                var rule = rules[i];
+                for (var j = 0; j < rule.params.length; j++) {
+                    var param = rule.params[j];
+                    if (param.name.charAt(0) !== '\'' && param.name.charAt(0) !== '\"') {
+                        param.value = scope.$eval(param.name);
+                    } else {
+                        param.value = param.name.replace(/\"/g, '').replace(/\'/g, '');
+                    }
+                }
+            }
+            return rules;
+        };
+        
+        function validateRequired(value, params) {
+            var required = params.length === 0;
+            if (params.length === 1) {
+                required = required || (params[0].value === true || typeof (params[0].value) !== 'boolean');
+            }
+            if (params.length === 2) {
+                required = required || params[0].value;
+            }
+
+            var message = (params.length === 1 && typeof (params[0].value) !== 'boolean')
+                ? params[0].value : params.length === 2 
+                    ? params[1].value : 'This field is required';
+
+            if (required && !value) {
+                return { valid: false, message: message };
             }
             return { valid: true, message: '' };
         };
@@ -106,14 +173,12 @@
             if (!value)
                 value = '';
 
-            var paramArr = params.replace('[', '').replace(']', '').split(',');
-
-            var minLen = parseInt(paramArr[0]);
-            var maxLen = paramArr.length > 0 ? parseInt(paramArr[1]) : INT.MAX_VALUE;
+            var minLen = parseInt(params[0].value);
+            var maxLen = params.length > 0 ? parseInt(params[1].value) : INT.MAX_VALUE;
             var valid = (isNaN(minLen) || (!isNaN(minLen) && value.length >= minLen))
                 && (isNaN(maxLen) || (!isNaN(maxLen) && value.length <= maxLen));
 
-            var message = paramArr.length > 1 && !valid ? paramArr[2] : '';
+            var message = params.length > 2 && !valid ? params[2].value : '';
             if (!message && !valid) {
                 message = 'This field should be ';
                 if (!isNaN(minLen)) {
@@ -202,26 +267,27 @@
 
                 var styles = findStyles(scope, ngForm, attrs);
 
+                var ruleStr = findProperty(attrs, 'validator');
+                ruleStr = ruleStr ? ruleStr : '';
+
                 var modelController = findInputNameToValidate(element, attrs, ngForm);
+                addWatches(scope, modelController, ruleStr);
+               
                 modelController.$validators.validator = function(modelValue, viewValue) {
                     var value = modelValue || viewValue;
-
-                    var typeStr = findProperty(attrs, 'validator');
-                    typeStr = typeStr ? typeStr : '';
-
-                    var regexp = /([^\[\],]*)(\[([^\[\]]*\])|\[([\'\"](.)*[\'\"])*\])?([,]?)/g;
-                    var match = regexp.exec(typeStr);
+                    var rules = extractParams(scope,ruleStr);
 
                     var result = { valid: true, message: '' };
-                    while (match != null && match[0]) {
+                    for (var i = 0; i < rules.length; i++) {
+                        var rule = rules[i];
+
                         var typeResult = null;
-                        switch (match[1].toLowerCase())
-                        {
+                        switch (rule.type) {
                             case 'required':
-                                typeResult = validateRequired(value,match[2]);
+                                typeResult = validateRequired(value, rule.params);
                                 break;
                             case 'string':
-                                typeResult = validateString(value, match[2]);
+                                typeResult = validateString(value, rule.params);
                                 break;
                         }
                         if (typeResult) {
@@ -229,7 +295,6 @@
                             result.message += result.message ? '<br/>' : '';
                             result.message += typeResult.message;
                         }
-                        match = regexp.exec(typeStr);
                     }
 
                     if (modelController.$dirty) {

@@ -65,7 +65,7 @@ describe('directives', function() {
             $scope = $rootScope.$new();
 
             element = $compile('<form name="Form">' +
-                '<div validator="required[this field is required]">' +
+                '<div validator="required[\'this field is required\']">' +
                 '<input type="text" name="required" ng-model="required">' +
                 '</div>' +
                 '</form>')($scope);
@@ -145,7 +145,7 @@ describe('directives', function() {
             $scope = $rootScope.$new();
 
             element = $compile('<form name="Form">' +
-                '<div validator="string[2,3,invalid string]">' +
+                '<div validator="string[2,3,\'invalid string\']">' +
                 '<input type="text" name="sringLength" ng-model="sringLength">' +
                 '</div>' +
                 '</form>')($scope);
