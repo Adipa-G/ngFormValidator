@@ -121,8 +121,8 @@
                 for (var j = 0; j < rule.params.length; j++) {
                     var param = rule.params[j];
                     if (param.name.charAt(0) !== '\'' && param.name.charAt(0) !== '\"') {
-                        scope.$watch(param.name, function (oldValue, newValue) {
-                            if (oldValue !== newValue) {
+                        scope.$watch(param.name, function (newValue, oldValue) {
+                            if (newValue !== oldValue) {
                                 modelController.$validate();
                             }
                         });
@@ -143,24 +143,23 @@
                         param.value = param.name.replace(/\"/g, '').replace(/\'/g, '');
                     }
                 }
+
+                if (rule.params.length > 0
+                    && typeof (rule.params[0].value) === 'boolean') {
+                    rule.enabled = rule.params[0].value;
+                    rule.params.splice(0,1);
+                }
+                else {
+                    rule.enabled = true;
+                }
             }
             return rules;
         };
         
         function validateRequired(value, params) {
-            var required = params.length === 0;
-            if (params.length === 1) {
-                required = required || (params[0].value === true || typeof (params[0].value) !== 'boolean');
-            }
-            if (params.length === 2) {
-                required = required || params[0].value;
-            }
+            var message = (params.length === 1) ? params[0].value : 'This field is required';
 
-            var message = (params.length === 1 && typeof (params[0].value) !== 'boolean')
-                ? params[0].value : params.length === 2 
-                    ? params[1].value : 'This field is required';
-
-            if (required && !value) {
+            if (!value) {
                 return { valid: false, message: message };
             }
             return { valid: true, message: '' };
@@ -238,7 +237,9 @@
         function updateClasses(element, styles, result) {
             removeClasses(element, styles.successStyle);
             removeClasses(element, styles.errorStyle);
-            addClasses(element, result.valid ? styles.successStyle : styles.errorStyle);
+            if (result.validationCount > 0) {
+                addClasses(element, result.valid ? styles.successStyle : styles.errorStyle);
+            }
         };
 
         function showValidationMessage(modelController, element, styles, result) {
@@ -277,9 +278,12 @@
                     var value = modelValue || viewValue;
                     var rules = extractParams(scope,ruleStr);
 
-                    var result = { valid: true, message: '' };
+                    var result = { validationCount: 0, valid: true, message: '' };
                     for (var i = 0; i < rules.length; i++) {
                         var rule = rules[i];
+
+                        if (!rule.enabled)
+                            continue;
 
                         var typeResult = null;
                         switch (rule.type) {
@@ -291,6 +295,7 @@
                                 break;
                         }
                         if (typeResult) {
+                            result.validationCount += 1;
                             result.valid = result.valid & typeResult.valid;
                             result.message += result.message ? '<br/>' : '';
                             result.message += typeResult.message;
