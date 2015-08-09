@@ -76,6 +76,54 @@ describe('directives', function() {
             expect(element.find('p').hasClass('bg-danger')).toBe(true);
         });
     });
+    
+    describe('validation based on parameters', function () {
+        beforeEach(inject(function($injector) {
+            $rootScope = $injector.get('$rootScope');
+            $compile = $injector.get('$compile');
+            $timeout = $injector.get('$timeout');
+            $scope = $rootScope.$new();
+
+            element = $compile('<form name="Form">' +
+                '<div validator="required[validationEnabled,validationMessage]">' +
+                '<input type="text" name="required" ng-model="required">' +
+                '</div>' +
+                '</form>')($scope);
+            $scope.$digest();
+        }));
+
+        it('When validation enabled, Initial should be pristine and invalid', function() {
+            $scope.validationEnabled = true;
+            $scope.$digest();
+            
+            expect($scope.Form.$pristine).toBe(true);
+            expect(element.hasClass('ng-pristine')).toBe(true);
+            expect($scope.Form.$valid).toBe(false);
+            expect($scope.Form.$invalid).toBe(true);
+        });
+
+        it('When validation disabled, Initial should be pristine and valid', function() {
+            $scope.validationEnabled = false;
+            $scope.$digest();
+            
+            expect($scope.Form.$pristine).toBe(true);
+            expect(element.hasClass('ng-pristine')).toBe(true);
+            expect($scope.Form.$valid).toBe(true);
+            expect($scope.Form.$invalid).toBe(false);
+        });
+        
+        it('When validation enabled with custom error message, should show error message', function() {
+            $scope.validationEnabled = true;
+            $scope.validationMessage = 'Test Message';
+            $scope.$digest();
+            
+            $scope.Form.required.$setViewValue('');
+            
+            expect($scope.Form.$valid).toBe(false);
+            expect($scope.Form.$invalid).toBe(true);
+            expect(element.find('p').text()).toBe('Test Message');
+        });
+    });
 
     describe('override input name', function () {
         beforeEach(inject(function ($injector) {
