@@ -77,7 +77,7 @@ describe('directives', function() {
         });
     });
     
-    describe('validation based on parameters', function () {
+    describe('dynamic validation rules', function () {
         beforeEach(inject(function($injector) {
             $rootScope = $injector.get('$rootScope');
             $compile = $injector.get('$compile');
@@ -122,6 +122,33 @@ describe('directives', function() {
             expect($scope.Form.$valid).toBe(false);
             expect($scope.Form.$invalid).toBe(true);
             expect(element.find('p').text()).toBe('Test Message');
+        });
+        
+        it('When validation enabled, and set validation rule off, updates validation result', function() {
+            $scope.validationEnabled = true;
+            $scope.$digest();
+            
+            $scope.Form.required.$setViewValue('');
+            expect($scope.Form.$valid).toBe(false);
+            expect($scope.Form.$invalid).toBe(true);
+            
+            $scope.validationEnabled = false;
+            $scope.$digest();
+            expect($scope.Form.$valid).toBe(true);
+            expect($scope.Form.$invalid).toBe(false);
+        });
+        
+        it('When validation enabled, and change validation message, updates validation message', function() {
+            $scope.validationEnabled = true;
+            $scope.validationMessage = 'Test Message';
+            $scope.$digest();
+            
+            $scope.Form.required.$setViewValue('');
+            expect(element.find('p').text()).toBe('Test Message');
+            
+            $scope.validationMessage = 'Test Message1';
+            $scope.$digest();
+            expect(element.find('p').text()).toBe('Test Message1');
         });
     });
 
