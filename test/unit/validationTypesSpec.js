@@ -259,7 +259,7 @@ describe('directives', function() {
             $scope = $rootScope.$new();
 
             element = $compile('<form name="Form">' +
-                '<div validator="regex[\'[2-9]\d{2}[2-9]\d{2}\d{4}$\']">' +
+                '<div validator="regex[\'\\S+@\\S+\\.\\S+\']">' +
                 '<input type="text" name="regexValidation" ng-model="email">' +
                 '</div>' +
                 '</form>')($scope);
@@ -302,20 +302,19 @@ describe('directives', function() {
             $scope = $rootScope.$new();
 
             element = $compile('<form name="Form">' +
-                '<div validator="string[100,200,\'invalid number\']">' +
-                '<input type="text" name="sringLength" ng-model="sringLength">' +
+                '<div validator="regex[\'\\S+@\\S+\\.\\S+\',\'value should match pattern\']">' +
+                '<input type="text" name="regexValidation" ng-model="email">' +
                 '</div>' +
                 '</form>')($scope);
             $scope.$digest();
         }));
 
         it('After Input should be dirty, invalid, has error message set in the form', function () {
-
-            $scope.Form.sringLength.$setViewValue('1');
+            $scope.Form.regexValidation.$setViewValue('aa_bb.com');
 
             expect($scope.Form.$dirty).toBe(true);
             expect($scope.Form.$valid).toBe(false);
-            expect(element.find('p')[0].innerText).toBe('invalid number');
+            expect(element.find('p')[0].innerText).toBe('value should match pattern');
         });
     });
 });

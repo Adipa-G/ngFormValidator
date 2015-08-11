@@ -230,7 +230,7 @@
             if (!value)
                 value = '';
             
-            var expr = new RegExp(params[0]);
+            var expr = new RegExp(params[0].value,'gi');
             var valid = expr.test(value);
             
             var message = params.length > 1 && !valid ? params[1].value : '';
