@@ -11,7 +11,6 @@
             if (!object)
                 return null;
 
-            // ReSharper disable once MissingHasOwnPropertyInForeach
             for (var attrName in object) {
                 if (attrNameEquals(attrName, name)) {
                     return object[attrName];
@@ -230,7 +229,7 @@
             if (!value)
                 value = '';
             
-            var expr = new RegExp(params[0].value);
+            var expr = new RegExp(params[0].value,'gi');
             var valid = expr.test(value);
             
             var message = params.length > 1 && !valid ? params[1].value : '';
@@ -239,6 +238,28 @@
             }
             
             return { valid: valid, message: message };
+        };
+        
+        function validateEmail(value,params){
+            if (!value)
+                value = '';
+            
+            var message = params.length > 0 
+            ? params[0].value 
+            : 'Please enter an email address';
+            
+            return validateRegEx(value,[{value : '^(([^<>()[\\]\\.,;:\\s@\\"]+(\\.[^<>()[\\]\\.,;:\\s@\\"]+)*)|(\\".+\\"))@(([^<>()[\\]\\.,;:\\s@\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\"]{2,})$'},{value : message}]);
+        };
+        
+         function validateUrl(value,params){
+            if (!value)
+                value = '';
+            
+            var message = params.length > 0 
+            ? params[0].value 
+            : 'Please enter a URL';
+            
+            return validateRegEx(value,[{value : '(http|ftp|https)://[\\w-]+(\\.[\\w-]+)+([\\w.,@?^=%&amp;:/~+#-]*[\\w@?^=%&amp;/~+#-])?'},{value : message}]);
         };
 
         /*
@@ -346,6 +367,12 @@
                                 break;
                             case 'regex':
                                 typeResult = validateRegEx(value, rule.params);
+                                break;
+                            case 'email':
+                                typeResult = validateEmail(value, rule.params);
+                                break;
+                            case 'url':
+                                typeResult = validateUrl(value, rule.params);
                                 break;
                         }
                         if (typeResult) {

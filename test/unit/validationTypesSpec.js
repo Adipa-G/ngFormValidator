@@ -317,4 +317,138 @@ describe('directives', function() {
             expect(element.find('p')[0].innerText).toBe('value should match pattern');
         });
     });
+    
+    describe('email validation', function () {
+        beforeEach(inject(function ($injector) {
+            $rootScope = $injector.get('$rootScope');
+            $compile = $injector.get('$compile');
+            $timeout = $injector.get('$timeout');
+            $scope = $rootScope.$new();
+
+            element = $compile('<form name="Form">' +
+                '<div validator="email">' +
+                '<input type="text" name="emailValidation" ng-model="email">' +
+                '</div>' +
+                '</form>')($scope);
+            $scope.$digest();
+        }));
+
+        it('Initial should be pristine and invalid', function () {
+            expect($scope.Form.$pristine).toBe(true);
+            expect(element.hasClass('ng-pristine')).toBe(true);
+            expect($scope.Form.$valid).toBe(false);
+            expect($scope.Form.$invalid).toBe(true);
+        });
+        
+        it('After Input should be dirty, invalid, form should be invalid', function () {
+            $scope.Form.emailValidation.$setViewValue('aa_bb.com');
+
+            expect($scope.Form.$dirty).toBe(true);
+            expect($scope.Form.$valid).toBe(false);
+            expect(element.find('p').hasClass('bg-danger')).toBe(true);
+            expect(element.find('div').hasClass('has-error')).toBe(true);
+            expect(element.find('div').hasClass('has-feedback')).toBe(true);
+        });
+
+        it('After Input should be dirty, valid, no error message valid classes set', function () {
+            $scope.Form.emailValidation.$setViewValue('aa@bb.com');
+
+            expect($scope.Form.$dirty).toBe(true);
+            expect($scope.Form.$valid).toBe(true);
+            expect(element.find('p').hasClass('bg-danger')).toBeUndefined(true);
+            expect(element.find('div').hasClass('has-success')).toBe(true);
+            expect(element.find('div').hasClass('has-feedback')).toBe(true);
+        });
+    });
+
+    describe('email validation with message', function () {
+        beforeEach(inject(function ($injector) {
+            $rootScope = $injector.get('$rootScope');
+            $compile = $injector.get('$compile');
+            $timeout = $injector.get('$timeout');
+            $scope = $rootScope.$new();
+
+            element = $compile('<form name="Form">' +
+                '<div validator="email[\'Incorrect email address\']">' +
+                '<input type="text" name="emailValidation" ng-model="email">' +
+                '</div>' +
+                '</form>')($scope);
+            $scope.$digest();
+        }));
+
+        it('After Input should be dirty, invalid, has error message set in the form', function () {
+            $scope.Form.emailValidation.$setViewValue('aa_bb.com');
+
+            expect($scope.Form.$dirty).toBe(true);
+            expect($scope.Form.$valid).toBe(false);
+            expect(element.find('p')[0].innerText).toBe('Incorrect email address');
+        });
+    });
+    
+    describe('url validation', function () {
+        beforeEach(inject(function ($injector) {
+            $rootScope = $injector.get('$rootScope');
+            $compile = $injector.get('$compile');
+            $timeout = $injector.get('$timeout');
+            $scope = $rootScope.$new();
+
+            element = $compile('<form name="Form">' +
+                '<div validator="url">' +
+                '<input type="text" name="urlValidation" ng-model="url">' +
+                '</div>' +
+                '</form>')($scope);
+            $scope.$digest();
+        }));
+
+        it('Initial should be pristine and invalid', function () {
+            expect($scope.Form.$pristine).toBe(true);
+            expect(element.hasClass('ng-pristine')).toBe(true);
+            expect($scope.Form.$valid).toBe(false);
+            expect($scope.Form.$invalid).toBe(true);
+        });
+        
+        it('After Input should be dirty, invalid, form should be invalid', function () {
+            $scope.Form.urlValidation.$setViewValue('httttp://google.com');
+
+            expect($scope.Form.$dirty).toBe(true);
+            expect($scope.Form.$valid).toBe(false);
+            expect(element.find('p').hasClass('bg-danger')).toBe(true);
+            expect(element.find('div').hasClass('has-error')).toBe(true);
+            expect(element.find('div').hasClass('has-feedback')).toBe(true);
+        });
+
+        it('After Input should be dirty, valid, no error message valid classes set', function () {
+            $scope.Form.urlValidation.$setViewValue('http://www.google.com/test');
+
+            expect($scope.Form.$dirty).toBe(true);
+            expect($scope.Form.$valid).toBe(true);
+            expect(element.find('p').hasClass('bg-danger')).toBeUndefined(true);
+            expect(element.find('div').hasClass('has-success')).toBe(true);
+            expect(element.find('div').hasClass('has-feedback')).toBe(true);
+        });
+    });
+
+    describe('url validation with message', function () {
+        beforeEach(inject(function ($injector) {
+            $rootScope = $injector.get('$rootScope');
+            $compile = $injector.get('$compile');
+            $timeout = $injector.get('$timeout');
+            $scope = $rootScope.$new();
+
+            element = $compile('<form name="Form">' +
+                '<div validator="email[\'Incorrect url\']">' +
+                '<input type="text" name="urlValidation" ng-model="url">' +
+                '</div>' +
+                '</form>')($scope);
+            $scope.$digest();
+        }));
+
+        it('After Input should be dirty, invalid, has error message set in the form', function () {
+            $scope.Form.urlValidation.$setViewValue('httttp://google.com');
+
+            expect($scope.Form.$dirty).toBe(true);
+            expect($scope.Form.$valid).toBe(false);
+            expect(element.find('p')[0].innerText).toBe('Incorrect url');
+        });
+    });
 });
