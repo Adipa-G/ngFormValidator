@@ -234,7 +234,7 @@
             
             var message = params.length > 1 && !valid ? params[1].value : '';
             if (!message && !valid) {
-                message = 'This field should be a of pattern ' + params[0];
+                message = 'This field should be a of pattern ' + params[0].value;
             }
             
             return { valid: valid, message: message };
