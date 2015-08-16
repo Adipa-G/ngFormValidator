@@ -6,8 +6,10 @@ module.exports = function(config) {
             'test/lib/angular.1.4.1.js',
             'test/lib/angular-mocks.1.4.1.js',
             'src/angular-form-validator.1.4.1.0.js',
+            'src/dateParser.0.0.0.1.js',
             'test/unit/validatorConfigurationSpec.js',
-            'test/unit/validationTypesSpec.js'
+            'test/unit/validationTypesSpec.js',
+            'test/unit/dateParserSpec.js'
         ],
         exclude: [
 
