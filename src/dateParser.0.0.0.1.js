@@ -4,6 +4,7 @@
     if (window.dateParser)
         return;
     
+    var dateParts = [{ sections : ['d','dd'] }];
     var symbols = ['d'];
     var functions = ['setDate'];
     

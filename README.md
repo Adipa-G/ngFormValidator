@@ -1,4 +1,4 @@
-angular-fom-validator
+angular-form-validator
 =========================
 Angular form validator is an easy to use, highly customizable front-end validation framework.<br/>
 It can be used to show realtime validation status in form controls. It uses bootstrap styles to provide visual indication of validity of each control additon to a customizable error message. Further it supports overriding the styles with custom implementations.
@@ -16,7 +16,7 @@ License
 -----
 MIT
 
-Using angular-fom-validator
+Using angular-from-validator
 ---
 ```html
 <script src="dist/angular-form-validator.1.4.1.0.js"></script>
