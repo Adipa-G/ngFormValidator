@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-    var module = angular.module('angular.form.validator',[]);
+    var module = angular.module('ngFormValidator',[]);
 
     module.directive('validator', function() {
         function attrNameEquals(attrName, checkAgainst) {

@@ -1,12 +1,12 @@
 {
-  "name": "angular-form-validator",
+  "name": "ngFormValidator",
   "version": "1.4.1",
-  "description": "Forms validation for angularJS",
+  "description": "Form validation for angularJS",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adipa-g/angular-form-validator.git"
+    "url": "git+https://github.com/adipa-g/ngFormValidator.git"
   },
-  "homepage": "http://adipa-g.github.io/angular-form-validator/",
+  "homepage": "http://adipa-g.github.io/ngFormValidator/",
   "scripts": {
     "test": "grunt karma",
     "build": "grunt build",
@@ -25,7 +25,7 @@
     "client-side"
   ],
   "bugs": {
-    "url": "http://adipa-g.github.io/angular-form-validator/issues"
+    "url": "http://adipa-g.github.io/ngFormValidator/issues"
   },
   "devDependencies": {
     "grunt": "~0.4.4",

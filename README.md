@@ -1,6 +1,6 @@
-angular-form-validator
+ngFormValidator
 =========================
-Angular form validator is an easy to use, highly customizable front-end validation framework.<br/>
+ngFormValidator is an easy to use, highly customizable front-end validation framework.<br/>
 It can be used to show realtime validation status in form controls. It uses bootstrap styles to provide visual indication of validity of each control additon to a customizable error message. Further it supports overriding the styles with custom implementations.
 
 Requirement
@@ -10,20 +10,20 @@ It's not tested with older versions of angular, and you are welcome to test it w
 
 DEMO
 -----
-http://adipa-g.github.io/angular-forms-validator.html
+http://adipa-g.github.io/ngFormValidator.html
 
 License
 -----
 MIT
 
-Using angular-from-validator
+Using ngFormValidator
 ---
 ```html
-<script src="dist/angular-form-validator.1.4.1.0.js"></script>
+<script src="dist/ngFormValidator.1.4.1.0.js"></script>
 ```
 ```js
 //add module dependency
-angular.module('myApp', ['angular.form.validator']);
+angular.module('myApp', ['ngFormValidator']);
 ```
 
 Writing your First Code
@@ -40,9 +40,9 @@ Writing your First Code
 </form>
 ```
 
-[Documentation API](https://github.com/Adipa-G/Angular-Form-Validator/wiki/API)
+[Documentation API](https://github.com/Adipa-G/ngFormValidator/wiki/API)
 
-Built-in validation <small>in angular-form-validator</small>
+Built-in validation <small>in ngFormValidator</small>
 ===
 
 1. Required
@@ -105,4 +105,4 @@ $scope.validator.introform = {
 
 CHANGELOG
 =====
-See [release](https://github.com/Adipa-G/Angular-Form-Validator/wiki/CHANGELOG)
+See [release](https://github.com/Adipa-G/ngFormValidator/wiki/CHANGELOG)

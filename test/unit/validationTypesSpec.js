@@ -11,7 +11,7 @@ describe('directives', function() {
         $timeout,
         element;
 
-    beforeEach(module('angular.form.validator'));
+    beforeEach(module('ngFormValidator'));
 
     describe('required validation', function () {
         beforeEach(inject(function($injector) {

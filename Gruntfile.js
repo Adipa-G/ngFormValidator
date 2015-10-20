@@ -18,14 +18,14 @@ module.exports = function(grunt) {
         concat: {
             basic_and_extras: {
                 files: {
-                    'dist/angular-form-validator.1.4.1.0.js': ['src/angular-form-validator.1.4.1.0.js']
+                    'dist/ngFormValidator.1.4.1.0.js': ['src/ngFormValidator.1.4.1.0.js']
                 }
             }
         },
         uglify: {
             my_target: {
                 files: {
-                    'dist/angular-form-validator.1.4.1.0.min.js': ['dist/angular-form-validator.1.4.1.0.js']
+                    'dist/ngFormValidator.1.4.1.0.min.js': ['dist/ngFormValidator.1.4.1.0.js']
                 }
             }
         },
@@ -42,7 +42,7 @@ module.exports = function(grunt) {
         browserSync: {
             dev: {
                 bsFiles: {
-                    src: ['index.html', 'demo/**', 'dist/angular-form-validator.1.4.1.0.js']
+                    src: ['index.html', 'demo/**', 'dist/ngFormValidator.1.4.1.0.js']
                 },
                 options: {
                     host: 'localhost',
@@ -94,3 +94,4 @@ module.exports = function(grunt) {
     grunt.registerTask('check', ['jshint', 'jsbeautifier', 'build']); // use this before commit
     grunt.registerTask('test', ['karma']);
 };
+grunt.task.run(['test']);
