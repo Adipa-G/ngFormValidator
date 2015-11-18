@@ -253,7 +253,7 @@
             return validateRegEx(value,[{value : '^(([^<>()[\\]\\.,;:\\s@\\"]+(\\.[^<>()[\\]\\.,;:\\s@\\"]+)*)|(\\".+\\"))@(([^<>()[\\]\\.,;:\\s@\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\"]{2,})$'},{value : message}]);
         };
         
-         function validateUrl(value,params){
+        function validateUrl(value,params){
             if (!value)
                 value = '';
             
@@ -264,20 +264,36 @@
             return validateRegEx(value,[{value : '(http|ftp|https)://[\\w-]+(\\.[\\w-]+)+([\\w.,@?^=%&amp;:/~+#-]*[\\w@?^=%&amp;/~+#-])?'},{value : message}]);
         };
 
-        /*
-        function equalToControl(value, attrs, ngForm) {
-            var otherControlName = findProperty(attrs, 'v-equal-to');
-            if (otherControlName) {
-                var otherControl = findProperty(ngForm, otherControlName);
-                var otherControlValue = otherControl.$modelValue || otherControl.$viewValue;
-                if (value !== otherControlValue) {
-                    return { valid: false, message: 'Value of this control must be equal to value of ' + otherControlName }
-                }
-            } else {
-                return { valid: false, message: 'Unable to find control' + otherControlName }
+        function validateEqualTo(value,params,ngForm){
+            if (!params || params.length === 0)
+                return { valid: true, message: '' };
+
+            if (!value)
+                value = '';
+
+            var controlName = params[0].value;
+            var modelControl = ngForm[controlName];
+            var controlValue = '';
+            if (modelControl){
+                controlValue = modelControl.$modelValue || modelControl.$viewValue;;
             }
-            return { valid: true, message: '' };
-        };*/
+            
+            var message = params.length > 1 
+                ? params[1].value 
+                : 'The value of this field should be equal to ' + controlName;
+            return { valid: controlValue === value, message: message };
+        };
+        
+        function validateCustom(scope ,value,params){
+            if (!params || params.length === 0)
+                return { valid: true, message: '' };
+
+            if (!value)
+                value = '';
+
+            var functionName = params[0].value;
+            return scope[functionName](value);
+        };
 
         function removeClasses(element, classList) {
             if (element.classList) {
@@ -375,6 +391,12 @@
                                 break;
                             case 'url':
                                 typeResult = validateUrl(value, rule.params);
+                                break;
+                            case 'equalto':
+                                typeResult = validateEqualTo(value,rule.params,ngForm);
+                                break;
+                            case 'custom':
+                                typeResult = validateCustom(scope,value,rule.params);
                                 break;
                         }
                         if (typeResult) {

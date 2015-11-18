@@ -451,4 +451,96 @@ describe('directives', function() {
             expect(element.find('p')[0].innerText).toBe('Incorrect url');
         });
     });
+    
+    describe('equalTo validation', function () {
+        beforeEach(inject(function ($injector) {
+            $rootScope = $injector.get('$rootScope');
+            $compile = $injector.get('$compile');
+            $timeout = $injector.get('$timeout');
+            $scope = $rootScope.$new();
+
+            element = $compile('<form name="Form">' +
+                '<input type="text" name="equalToSrc" ng-model="srcValue">' +
+                '<div validator="equalTo[\'equalToSrc\']">' +
+                '<input type="text" name="dest" ng-model="confirmValue">' +
+                '</div>' +
+                '</form>')($scope);
+            $scope.$digest();
+        }));
+
+        it('Initial should be pristine and invalid', function () {
+            expect($scope.Form.$pristine).toBe(true);
+            expect(element.hasClass('ng-pristine')).toBe(true);
+            expect($scope.Form.$valid).toBe(false);
+            expect($scope.Form.$invalid).toBe(true);
+        });
+        
+        it('After Input should be dirty, invalid, form should be invalid', function () {
+            $scope.Form.equalToSrc.$setViewValue('test');
+            $scope.Form.dest.$setViewValue('1');
+
+            expect($scope.Form.$dirty).toBe(true);
+            expect($scope.Form.$valid).toBe(false);
+            expect(element.find('p').hasClass('bg-danger')).toBe(true);
+            expect(element.find('div').hasClass('has-error')).toBe(true);
+            expect(element.find('div').hasClass('has-feedback')).toBe(true);
+        });
+
+        it('After Input should be dirty, valid, no error message valid classes set', function () {
+            $scope.Form.equalToSrc.$setViewValue('test');
+            $scope.Form.dest.$setViewValue('test');
+
+            expect($scope.Form.$dirty).toBe(true);
+            expect($scope.Form.$valid).toBe(true);
+            expect(element.find('p').hasClass('bg-danger')).toBeUndefined(true);
+            expect(element.find('div').hasClass('has-success')).toBe(true);
+            expect(element.find('div').hasClass('has-feedback')).toBe(true);
+        });
+    });
+    
+    describe('custom validation', function () {
+        beforeEach(inject(function ($injector) {
+            $rootScope = $injector.get('$rootScope');
+            $compile = $injector.get('$compile');
+            $timeout = $injector.get('$timeout');
+            $scope = $rootScope.$new();
+            $scope.validateOne = function(value){
+                return { valid : value === '1',messsage : 'value is not 1'};  
+            };
+
+            element = $compile('<form name="Form">' +
+                '<div validator="custom[\'validateOne\']">' +
+                '<input type="text" name="custom" ng-model="customValue">' +
+                '</div>' +
+                '</form>')($scope);
+            $scope.$digest();
+        }));
+
+        it('Initial should be pristine and invalid', function () {
+            expect($scope.Form.$pristine).toBe(true);
+            expect(element.hasClass('ng-pristine')).toBe(true);
+            expect($scope.Form.$valid).toBe(false);
+            expect($scope.Form.$invalid).toBe(true);
+        });
+        
+        it('After Input should be dirty, invalid, form should be invalid', function () {
+            $scope.Form.custom.$setViewValue('2');
+
+            expect($scope.Form.$dirty).toBe(true);
+            expect($scope.Form.$valid).toBe(false);
+            expect(element.find('p').hasClass('bg-danger')).toBe(true);
+            expect(element.find('div').hasClass('has-error')).toBe(true);
+            expect(element.find('div').hasClass('has-feedback')).toBe(true);
+        });
+
+        it('After Input should be dirty, valid, no error message valid classes set', function () {
+            $scope.Form.custom.$setViewValue('1');
+
+            expect($scope.Form.$dirty).toBe(true);
+            expect($scope.Form.$valid).toBe(true);
+            expect(element.find('p').hasClass('bg-danger')).toBeUndefined(true);
+            expect(element.find('div').hasClass('has-success')).toBe(true);
+            expect(element.find('div').hasClass('has-feedback')).toBe(true);
+        });
+    });
 });
