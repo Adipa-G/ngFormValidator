@@ -12,10 +12,6 @@ DEMO
 -----
 http://adipa-g.github.io/ngFormValidator.html
 
-License
------
-MIT
-
 Using ngFormValidator
 ---
 ```html
@@ -106,3 +102,7 @@ $scope.validator.introform = {
 CHANGELOG
 =====
 See [release](https://github.com/Adipa-G/ngFormValidator/wiki/CHANGELOG)
+
+License
+-----
+GNU GPL V3
