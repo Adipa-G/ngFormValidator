@@ -1,13 +1,12 @@
-'use strict';
-
-(function () {
-    var module = angular.module('ngFormValidator',[]);
+(function(angular) {
+    'use strict';
+    var module = angular.module('ngFormValidator', []);
 
     module.directive('validator', function() {
         function attrNameEquals(attrName, checkAgainst) {
             return attrName.toLowerCase() === checkAgainst.toLowerCase() ||
-                attrName.toLowerCase() === checkAgainst.split("-").join("").toLowerCase();
-        };
+                attrName.toLowerCase() === checkAgainst.split('-').join('').toLowerCase();
+        }
 
         function findProperty(object, name) {
             if (!object)
@@ -19,10 +18,10 @@
                 }
             }
             return null;
-        };
+        }
 
         function findElementAttrByNameOrId(element, name) {
-            var attrs = element.attributes;;
+            var attrs = element.attributes;
             if (!attrs)
                 return null;
 
@@ -36,7 +35,7 @@
                 }
             }
             return null;
-        };
+        }
 
         function findInputNameToValidate(element, attrs, ngForm) {
             var inputName = findProperty(attrs, 'v-input');
@@ -61,7 +60,7 @@
                 }
             }
             return modelControler;
-        };
+        }
 
         function findStyle(attributeName, propertyName, scope, ngForm, attrs, defaultValue) {
             var styleValue = findProperty(attrs, attributeName);
@@ -78,7 +77,7 @@
                 styleValue = defaultValue;
             }
             return styleValue;
-        };
+        }
 
         function findStyles(scope, ngForm, attrs) {
             return {
@@ -86,11 +85,11 @@
                 errorStyle: findStyle('v-style-error', 'errorStyle', scope, ngForm, attrs, 'has-error has-feedback'),
                 errorMessageStyle: findStyle('v-style-error-message', 'errorMessageStyle', scope, ngForm, attrs, 'bg-danger')
             };
-        };
+        }
 
         function getValidationRules(ruleStr) {
             var rules = [];
-            
+
             var regexp = /([^\[\],]*)(\[([^\[\]]*\])|\[([\'\"](.)*[\'\"])*\])?([,]?)/g;
             var match = regexp.exec(ruleStr);
 
@@ -99,13 +98,16 @@
                     type: match[1].toLowerCase(),
                     params: []
                 };
-                
+
                 if (match[2]) {
                     var paramArr = match[2].replace('[', '').replace(']', '').split(',');
                     for (var i = 0; i < paramArr.length; i++) {
                         var param = paramArr[i].trim();
                         if (param) {
-                            rule.params.push({ name: param, value: null });
+                            rule.params.push({
+                                name: param,
+                                value: null
+                            });
                         }
                     }
                 }
@@ -113,26 +115,28 @@
                 match = regexp.exec(ruleStr);
             }
             return rules;
-        };
+        }
 
         function addWatches(scope, modelController, ruleStr) {
+            var watchFunc = function(newValue, oldValue) {
+                if (newValue !== oldValue) {
+                    modelController.$validate();
+                }
+            };
+
             var rules = getValidationRules(ruleStr);
             for (var i = 0; i < rules.length; i++) {
                 var rule = rules[i];
                 for (var j = 0; j < rule.params.length; j++) {
                     var param = rule.params[j];
                     if (param.name.charAt(0) !== '\'' && param.name.charAt(0) !== '\"') {
-                        scope.$watch(param.name, function (newValue, oldValue) {
-                            if (newValue !== oldValue) {
-                                modelController.$validate();
-                            }
-                        });
+                        scope.$watch(param.name, watchFunc);
                     }
                 }
             }
-        };
+        }
 
-        function extractParams(scope,ruleStr) {
+        function extractParams(scope, ruleStr) {
             var rules = getValidationRules(ruleStr);
             for (var i = 0; i < rules.length; i++) {
                 var rule = rules[i];
@@ -145,38 +149,46 @@
                     }
                 }
 
-                if (rule.params.length > 0
-                    && typeof (rule.params[0].value) === 'boolean') {
+                if (rule.params.length > 0 &&
+                    typeof(rule.params[0].value) === 'boolean') {
                     rule.enabled = rule.params[0].value;
-                    rule.params.splice(0,1);
-                }
-                else {
+                    rule.params.splice(0, 1);
+                } else {
                     rule.enabled = true;
                 }
             }
             return rules;
-        };
-        
+        }
+
         function validateRequired(value, params) {
             var message = (params.length === 1) ? params[0].value : 'This field is required';
 
             if (!value) {
-                return { valid: false, message: message };
+                return {
+                    valid: false,
+                    message: message
+                };
             }
-            return { valid: true, message: '' };
-        };
+            return {
+                valid: true,
+                message: ''
+            };
+        }
 
         function validateString(value, params) {
             if (!params)
-                return { valid: true, message: '' };
+                return {
+                    valid: true,
+                    message: ''
+                };
 
             if (!value)
                 value = '';
 
             var minLen = parseInt(params[0].value);
             var maxLen = params.length > 0 ? parseInt(params[1].value) : INT.MAX_VALUE;
-            var valid = (isNaN(minLen) || (!isNaN(minLen) && value.length >= minLen))
-                && (isNaN(maxLen) || (!isNaN(maxLen) && value.length <= maxLen));
+            var valid = (isNaN(minLen) || (!isNaN(minLen) && value.length >= minLen)) &&
+                (isNaN(maxLen) || (!isNaN(maxLen) && value.length <= maxLen));
 
             var message = params.length > 2 && !valid ? params[2].value : '';
             if (!message && !valid) {
@@ -188,15 +200,21 @@
                     }
                 }
                 if (!isNaN(maxLen)) {
-                    message += ' maximum length of ' + maxLen;          
+                    message += ' maximum length of ' + maxLen;
                 }
             }
-            return { valid: valid, message: message };
-        };
-        
+            return {
+                valid: valid,
+                message: message
+            };
+        }
+
         function validateNumber(value, params) {
             if (!params)
-                return { valid: true, message: '' };
+                return {
+                    valid: true,
+                    message: ''
+                };
 
             if (!value)
                 value = '';
@@ -204,9 +222,9 @@
             var min = parseInt(params[0].value);
             var max = params.length > 0 ? parseInt(params[1].value) : INT.MAX_VALUE;
             var val = Number(value);
-            var valid = !isNaN(val)
-                && (isNaN(min) || (!isNaN(min) && val >= min))
-                && (isNaN(max) || (!isNaN(max) && val <= max));
+            var valid = !isNaN(val) &&
+                (isNaN(min) || (!isNaN(min) && val >= min)) &&
+                (isNaN(max) || (!isNaN(max) && val <= max));
 
             var message = params.length > 2 && !valid ? params[2].value : '';
             if (!message && !valid) {
@@ -218,55 +236,75 @@
                     }
                 }
                 if (!isNaN(max)) {
-                    message += ' maximum of ' + max;          
+                    message += ' maximum of ' + max;
                 }
             }
-            return { valid: valid, message: message };
-        };
-        
-        function validateRegEx(value,params){
+            return {
+                valid: valid,
+                message: message
+            };
+        }
+
+        function validateRegEx(value, params) {
             if (!params)
-                return { valid: true, message: '' };
+                return {
+                    valid: true,
+                    message: ''
+                };
 
             if (!value)
                 value = '';
-            
-            var expr = new RegExp(params[0].value,'gi');
+
+            var expr = new RegExp(params[0].value, 'gi');
             var valid = expr.test(value);
-            
+
             var message = params.length > 1 && !valid ? params[1].value : '';
             if (!message && !valid) {
                 message = 'This field should be a of pattern ' + params[0].value;
             }
-            
-            return { valid: valid, message: message };
-        };
-        
-        function validateEmail(value,params){
-            if (!value)
-                value = '';
-            
-            var message = params.length > 0 
-            ? params[0].value 
-            : 'Please enter an email address';
-            
-            return validateRegEx(value,[{value : '^(([^<>()[\\]\\.,;:\\s@\\"]+(\\.[^<>()[\\]\\.,;:\\s@\\"]+)*)|(\\".+\\"))@(([^<>()[\\]\\.,;:\\s@\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\"]{2,})$'},{value : message}]);
-        };
-        
-        function validateUrl(value,params){
-            if (!value)
-                value = '';
-            
-            var message = params.length > 0 
-            ? params[0].value 
-            : 'Please enter a URL';
-            
-            return validateRegEx(value,[{value : '(http|ftp|https)://[\\w-]+(\\.[\\w-]+)+([\\w.,@?^=%&amp;:/~+#-]*[\\w@?^=%&amp;/~+#-])?'},{value : message}]);
-        };
 
-        function validateEqualTo(value,params,ngForm){
+            return {
+                valid: valid,
+                message: message
+            };
+        }
+
+        function validateEmail(value, params) {
+            if (!value)
+                value = '';
+
+            var message = params.length > 0 ?
+                params[0].value :
+                'Please enter an email address';
+
+            return validateRegEx(value, [{
+                value: '^(([^<>()[\\]\\.,;:\\s@\\"]+(\\.[^<>()[\\]\\.,;:\\s@\\"]+)*)|(\\".+\\"))@(([^<>()[\\]\\.,;:\\s@\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\"]{2,})$'
+            }, {
+                value: message
+            }]);
+        }
+
+        function validateUrl(value, params) {
+            if (!value)
+                value = '';
+
+            var message = params.length > 0 ?
+                params[0].value :
+                'Please enter a URL';
+
+            return validateRegEx(value, [{
+                value: '(http|ftp|https)://[\\w-]+(\\.[\\w-]+)+([\\w.,@?^=%&amp;:/~+#-]*[\\w@?^=%&amp;/~+#-])?'
+            }, {
+                value: message
+            }]);
+        }
+
+        function validateEqualTo(value, params, ngForm) {
             if (!params || params.length === 0)
-                return { valid: true, message: '' };
+                return {
+                    valid: true,
+                    message: ''
+                };
 
             if (!value)
                 value = '';
@@ -274,26 +312,32 @@
             var controlName = params[0].value;
             var modelControl = ngForm[controlName];
             var controlValue = '';
-            if (modelControl){
-                controlValue = modelControl.$modelValue || modelControl.$viewValue;;
+            if (modelControl) {
+                controlValue = modelControl.$modelValue || modelControl.$viewValue;
             }
-            
-            var message = params.length > 1 
-                ? params[1].value 
-                : 'The value of this field should be equal to ' + controlName;
-            return { valid: controlValue === value, message: message };
-        };
-        
-        function validateCustom(scope ,value,params){
+
+            var message = params.length > 1 ?
+                params[1].value :
+                'The value of this field should be equal to ' + controlName;
+            return {
+                valid: controlValue === value,
+                message: message
+            };
+        }
+
+        function validateCustom(scope, value, params) {
             if (!params || params.length === 0)
-                return { valid: true, message: '' };
+                return {
+                    valid: true,
+                    message: ''
+                };
 
             if (!value)
                 value = '';
 
             var functionName = params[0].value;
             return scope[functionName](value);
-        };
+        }
 
         function removeClasses(element, classList) {
             if (element.classList) {
@@ -305,7 +349,7 @@
                     }
                 }
             }
-        };
+        }
 
         function addClasses(element, classList) {
             if (!element.classList) {
@@ -319,7 +363,7 @@
                     element.classList.add(classItem);
                 }
             }
-        };
+        }
 
         function updateClasses(element, styles, result) {
             removeClasses(element, styles.successStyle);
@@ -327,7 +371,7 @@
             if (result.validationCount > 0) {
                 addClasses(element, result.valid ? styles.successStyle : styles.errorStyle);
             }
-        };
+        }
 
         function showValidationMessage(modelController, element, styles, result) {
             if (modelController.$validationErrorElement) {
@@ -336,13 +380,13 @@
             }
 
             if (!result.valid) {
-                var child = document.createElement("p");
+                var child = document.createElement('p');
                 addClasses(child, styles.errorMessageStyle);
                 child.innerHTML = result.message;
                 modelController.$validationErrorElement = child;
                 element.appendChild(child);
             }
-        };
+        }
 
         return {
             require: ['^form'],
@@ -360,12 +404,16 @@
 
                 var modelController = findInputNameToValidate(element, attrs, ngForm);
                 addWatches(scope, modelController, ruleStr);
-               
+
                 modelController.$validators.validator = function(modelValue, viewValue) {
                     var value = modelValue || viewValue;
-                    var rules = extractParams(scope,ruleStr);
+                    var rules = extractParams(scope, ruleStr);
 
-                    var result = { validationCount: 0, valid: true, message: '' };
+                    var result = {
+                        validationCount: 0,
+                        valid: true,
+                        message: ''
+                    };
                     for (var i = 0; i < rules.length; i++) {
                         var rule = rules[i];
 
@@ -393,10 +441,10 @@
                                 typeResult = validateUrl(value, rule.params);
                                 break;
                             case 'equalto':
-                                typeResult = validateEqualTo(value,rule.params,ngForm);
+                                typeResult = validateEqualTo(value, rule.params, ngForm);
                                 break;
                             case 'custom':
-                                typeResult = validateCustom(scope,value,rule.params);
+                                typeResult = validateCustom(scope, value, rule.params);
                                 break;
                         }
                         if (typeResult) {
@@ -416,4 +464,4 @@
             }
         };
     });
-})();
+})(angular);

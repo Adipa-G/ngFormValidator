@@ -18,14 +18,14 @@ module.exports = function(grunt) {
         concat: {
             basic_and_extras: {
                 files: {
-                    'dist/ngFormValidator.1.4.1.0.js': ['src/ngFormValidator.1.4.1.0.js']
+                    'dist/ngFormValidator.js': ['src/ngFormValidator.js']
                 }
             }
         },
         uglify: {
             my_target: {
                 files: {
-                    'dist/ngFormValidator.1.4.1.0.min.js': ['dist/ngFormValidator.1.4.1.0.js']
+                    'dist/ngFormValidator.js': ['dist/ngFormValidator.js']
                 }
             }
         },
@@ -42,7 +42,7 @@ module.exports = function(grunt) {
         browserSync: {
             dev: {
                 bsFiles: {
-                    src: ['index.html', 'demo/**', 'dist/ngFormValidator.1.4.1.0.js']
+                    src: ['index.html', 'demo/**', 'dist/ngFormValidator.js']
                 },
                 options: {
                     host: 'localhost',
@@ -66,7 +66,7 @@ module.exports = function(grunt) {
             }
         },
         karma: {
-            angular1_4_1: {
+            ngFormValidator: {
                 configFile: 'config/karma.conf.js'
             }
         },

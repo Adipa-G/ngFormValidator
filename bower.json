@@ -1,12 +1,12 @@
 {
   "name": "angular-fom-validator",
-  "version": "1.4.1.0",
+  "version": "1.6.6.0",
   "homepage": "http://adipa-g.github.io/ngFormValidator/",
   "authors": [
     "Adipa-G"
   ],
   "description": "Form Validation for AngularJS",
-  "main": "dist/ngFormValidator.1.4.1.0.js",
+  "main": "dist/ngFormValidator.js",
   "keywords": ["angular", "angularjs","form validation","validation", "angular validation", "validator", "client-side"],
   "license": "MIT",
   "ignore": [
