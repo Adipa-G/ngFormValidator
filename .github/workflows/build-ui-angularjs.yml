@@ -4,17 +4,17 @@ on:
   [push]
 
   build-and-test-solution:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the code
-        uses: actions/checkout@v3
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 14
-      - name: Build and Test
-        run: |
-          npm install -g grunt --prefer-offline
-          npm install --prefer-offline
-          grunt
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout the code
+      uses: actions/checkout@v3
+    - name: Setup Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 14
+    - name: Build and Test
+      run: |
+        npm install -g grunt --prefer-offline
+        npm install --prefer-offline
+        grunt
+    - run: echo "🍏 This job's status is ${{ job.status }}."
