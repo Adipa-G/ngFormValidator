@@ -1,23 +1,30 @@
 {
-    "version": "0.1.0",
+    "version": "2.0.0",
     "command": "grunt",
-    "isShellCommand": true,
     "tasks": [
         {
-            "taskName": "build",
-            "args": [],
-            "isBuildCommand": true,
-            "isWatching": false,
+            "label": "build",
+            "type": "grunt",
+            "task": "build",
             "problemMatcher": [
                 "$lessCompile",
                 "$tsc",
                 "$jshint"
-            ]
+            ],
+            "group": {
+                "_id": "build",
+                "isDefault": false
+            }
         },
         {
-            "taskName": "test",
-            "args": [],
-            "isTestCommand": true
+            "label": "test",
+            "type": "grunt",
+            "task": "test",
+            "problemMatcher": [],
+            "group": {
+                "_id": "test",
+                "isDefault": false
+            }
         }
     ]
 }

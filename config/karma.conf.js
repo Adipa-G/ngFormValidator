@@ -20,18 +20,17 @@ module.exports = function(config) {
         port: 9876,
         colors: true,
         logLevel: config.LOG_INFO,
-        browsers: ['PhantomJS'],
+        /*browsers: ['PhantomJS'],
         autoWatch: true,
+        singleRun: true,*/
+        browsers: ['ChromeHeadless'],
         singleRun: true,
-        /*browsers: ['Chrome'],
-        singleRun: false,
-        autoWatch: true,*/
+        autoWatch: true,
         captureTimeout: 20000,
         reportSlowerThan: 500,
         plugins: [
             'karma-jasmine',
             'karma-chrome-launcher',
-            'karma-firefox-launcher',
             'karma-phantomjs-launcher',
             'karma-coverage'
         ]

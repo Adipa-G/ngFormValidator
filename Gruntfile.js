@@ -93,4 +93,5 @@ module.exports = function(grunt) {
     grunt.registerTask('build', ['clean', 'concat', 'uglify']);
     grunt.registerTask('check', ['jshint', 'jsbeautifier', 'build']); // use this before commit
     grunt.registerTask('test', ['karma']);
+    grunt.registerTask('default', ['build', 'check', 'test']);
 };
