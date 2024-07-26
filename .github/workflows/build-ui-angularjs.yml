@@ -1,7 +1,7 @@
 name: Build and Test
 run-name: Build and Test
 on: 
-  [push]
+  [push, workflow_dispatch]
   
 jobs:
   build-and-test:
